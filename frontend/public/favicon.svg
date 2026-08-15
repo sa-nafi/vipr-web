@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="vipr-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e3a8a" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  
+  <!-- Outer Rounded Badge -->
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#vipr-bg)" filter="url(#shadow)" />
+  
+  <!-- Gloss / Subtle Border -->
+  <rect x="4.5" y="4.5" width="55" height="55" rx="13.5" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1" />
+  
+  <!-- Vipr Bold V Glyph -->
+  <path d="M19 19 L32 45 L45 19 H38.5 L32 34 L25.5 19 Z" fill="#ffffff" />
+</svg>

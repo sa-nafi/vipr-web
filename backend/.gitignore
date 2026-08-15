@@ -1,0 +1,8 @@
+# Binaries
+server
+main_bin
+temp_*
+
+# Environment files
+.env
+.env.*
