@@ -7,25 +7,22 @@ FROM golang:1.24-bookworm AS builder
 
 WORKDIR /src
 
-# Cache dependencies
-COPY go.mod ./
-RUN go mod download || true
-
 # Copy backend source
 COPY . .
 
-# Compile optimized static binary
+# Compile optimized static binary (pure standard library, 0 external deps)
 RUN CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-s -w" \
     -o /app/server \
     ./cmd/server
 
 # ---------------------------------------------------------
-# Stage 2: Minimal Runtime Container for Koyeb
+# Stage 2: Minimal Runtime Container with GLIBC >= 2.39
 # ---------------------------------------------------------
-FROM debian:bookworm-slim AS runtime
+FROM ubuntu:24.04 AS runtime
 
 ARG VIPR_VERSION=v0.3.0
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install g++ (required for Vipr AOT C++ linking), ca-certificates, and curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -45,15 +42,11 @@ RUN useradd -m -u 10001 appuser \
 WORKDIR /app
 
 # Copy Go server binary from builder stage
-COPY --from=builder /app/server /app/server
+COPY --from=builder --chown=appuser:appuser /app/server /app/server
 
 # Environment configuration
 ENV PORT=8080 \
-    ENV=production \
-    VIPR_BIN_PATH=/usr/local/bin/vipr \
-    COMPILE_TIMEOUT_SEC=10 \
-    EXEC_TIMEOUT_SEC=5 \
-    MAX_CONCURRENT_RUNS=4
+    ALLOWED_ORIGIN=*
 
 EXPOSE 8080
 
