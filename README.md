@@ -132,25 +132,6 @@ Compiles and executes Vipr source code in an isolated temporary sandbox.
 
 ---
 
-## Production Deployment
-
-### Backend: [Render](https://render.com) (Docker Web Service)
-1. Create a **New Web Service** connected to this repository.
-2. Set **Root Directory** to `backend`.
-3. Set **Runtime** to **Docker** and **Plan** to **Free**.
-4. Set **Health Check Path** to `/health`.
-5. *(Optional)* Set `ALLOWED_ORIGIN` to your frontend domain (defaults to `*`).
-
-### Frontend: [Cloudflare Pages](https://pages.cloudflare.com)
-1. Create a **New Pages Project** connected to this repository.
-2. Set **Framework Preset** to **Vite**.
-3. Set **Root Directory** to `frontend`.
-4. Set **Build Command** to `npm run build` and **Output Directory** to `dist`.
-5. Add environment variable:
-   - `VITE_API_URL`: Your live Render backend URL (e.g. `https://vipr-backend.onrender.com`).
-
----
-
 ## Running Tests
 
 Run the backend test suite (unit and execution integration tests):
