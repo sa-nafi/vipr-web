@@ -134,17 +134,17 @@ export const DocsPage: FC<DocsPageProps> = ({ theme, onTrySnippet }) => {
       <div className={`my-4 rounded-xl border overflow-hidden shadow-sm ${
         isLight ? 'bg-slate-900 border-slate-700/60' : 'bg-neutral-950 border-neutral-800'
       }`}>
-        <div className={`flex items-center justify-between px-4 py-2 border-b select-none text-xs font-mono ${
+        <div className={`flex items-center justify-between px-3 sm:px-4 py-2 border-b select-none text-xs font-mono gap-2 ${
           isLight ? 'bg-slate-800/80 border-slate-700/80 text-slate-300' : 'bg-neutral-900/90 border-neutral-800 text-neutral-300'
         }`}>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500/80" />
-            <span className="font-medium text-slate-200">{title || 'Vipr Source'}</span>
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500/80 flex-shrink-0" />
+            <span className="font-medium text-slate-200 truncate">{title || 'Vipr Source'}</span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             <button
               onClick={() => handleCopy(code, id)}
-              className="btn btn-ghost btn-xs gap-1 text-slate-300 hover:text-white hover:bg-slate-700/60"
+              className="btn btn-ghost btn-xs gap-1 text-slate-300 hover:text-white hover:bg-slate-700/60 px-2"
               title="Copy code to clipboard"
             >
               {isCopied ? (
@@ -155,23 +155,24 @@ export const DocsPage: FC<DocsPageProps> = ({ theme, onTrySnippet }) => {
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5 opacity-70" />
-                  <span className="font-sans text-[11px]">Copy</span>
+                  <span className="font-sans text-[11px] hidden xs:inline">Copy</span>
                 </>
               )}
             </button>
             {canRun && (
               <button
                 onClick={() => onTrySnippet(code)}
-                className="btn btn-xs btn-primary bg-blue-600 hover:bg-blue-700 text-white gap-1 font-sans text-[11px] border-none shadow-sm"
+                className="btn btn-xs btn-primary bg-blue-600 hover:bg-blue-700 text-white gap-1 font-sans text-[11px] border-none shadow-sm px-2 sm:px-2.5"
                 title="Load into Playground Editor"
               >
                 <Play className="w-3 h-3 fill-current" />
-                <span>Try in Playground</span>
+                <span className="hidden sm:inline">Try in Playground</span>
+                <span className="sm:hidden">Try</span>
               </button>
             )}
           </div>
         </div>
-        <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed text-slate-100 selection:bg-blue-500/30">
+        <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed text-slate-100 selection:bg-blue-500/30">
           <code>{code}</code>
         </pre>
       </div>
@@ -179,9 +180,9 @@ export const DocsPage: FC<DocsPageProps> = ({ theme, onTrySnippet }) => {
   };
 
   return (
-    <div className={`flex-1 flex flex-col md:flex-row min-h-0 w-full overflow-hidden ${isLight ? 'bg-slate-50' : 'bg-base-300'}`}>
+    <div className={`flex-1 flex flex-col md:flex-row min-h-0 w-full overflow-hidden relative ${isLight ? 'bg-slate-50' : 'bg-base-300'}`}>
       {/* Mobile Sidebar Toggle Button */}
-      <div className={`md:hidden flex items-center justify-between px-4 py-2.5 border-b z-10 ${
+      <div className={`md:hidden flex items-center justify-between px-4 py-2 border-b z-10 ${
         isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-base-200 border-base-content/10 text-base-content'
       }`}>
         <div className="flex items-center gap-2 font-semibold text-xs uppercase tracking-wider text-blue-700 dark:text-blue-400">
@@ -190,16 +191,25 @@ export const DocsPage: FC<DocsPageProps> = ({ theme, onTrySnippet }) => {
         </div>
         <button
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="btn btn-ghost btn-sm btn-square"
+          className="btn btn-ghost btn-xs btn-square"
           aria-label="Toggle Table of Contents"
         >
           {isMobileSidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
         </button>
       </div>
 
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden transition-opacity"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed inset-y-0 left-0 z-30 w-72 md:static md:w-64 lg:w-72 flex-shrink-0 flex flex-col border-r transition-transform duration-200 ease-in-out select-none
+        fixed inset-y-0 left-0 z-40 w-72 md:static md:w-64 lg:w-72 flex-shrink-0 flex flex-col border-r transition-transform duration-200 ease-in-out select-none shadow-2xl md:shadow-none
         ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${isLight ? 'bg-white border-slate-200/80 text-slate-700' : 'bg-base-200 border-base-content/10 text-base-content'}
       `}>

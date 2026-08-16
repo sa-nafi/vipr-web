@@ -13,7 +13,13 @@
     @apply m-0 p-0 overflow-hidden font-sans text-base-content antialiased select-none;
     height: 100vh;
     height: 100dvh;
-    background-color: var(--fallback-b1,oklch(var(--b1)/1));
+    min-height: 100dvh;
+    width: 100%;
+    background-color: var(--fallback-b1, oklch(var(--b1)/1));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   /* Standard custom scrollbars */
@@ -42,7 +48,8 @@
 }
 
 /* Custom styles for playground terminal & editor */
-.monaco-editor, .monaco-editor .inputarea.ime-input {
+.monaco-editor,
+.monaco-editor .inputarea.ime-input {
   font-feature-settings: "calt", "liga";
 }
 
@@ -52,6 +59,7 @@
 
 .vipr-gradient-text {
   background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #06b6d4 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
