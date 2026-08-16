@@ -50,7 +50,7 @@ export const EditorPane: FC<EditorPaneProps> = ({
     };
   }, []);
 
-  // Check window width for responsive minimap
+  // Check window width for responsive settings
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -99,8 +99,10 @@ export const EditorPane: FC<EditorPaneProps> = ({
         });
       }
 
-      // Focus editor on mount
-      editor.focus();
+      // Focus editor on desktop mount only (avoid forcing soft keyboard on mobile mount)
+      if (window.innerWidth >= 768) {
+        editor.focus();
+      }
     },
     [onRun]
   );
@@ -110,13 +112,13 @@ export const EditorPane: FC<EditorPaneProps> = ({
   return (
     <div className="flex flex-col h-full w-full bg-base-100 overflow-hidden relative">
       {/* Pane Header Tab Bar */}
-      <div className="flex-none h-10 flex items-center justify-between px-3 bg-base-200/80 border-b border-base-content/10 text-xs select-none">
+      <div className="flex-none h-9 sm:h-10 flex items-center justify-between px-3 bg-base-200/80 border-b border-base-content/10 text-xs select-none">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-base-300/80 font-mono text-blue-800 dark:text-blue-400 text-xs border border-base-content/10 font-medium">
+          <div className="flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-base-300/80 font-mono text-blue-800 dark:text-blue-400 text-xs border border-base-content/10 font-medium">
             <FileText className="w-3.5 h-3.5 text-blue-800 dark:text-blue-400" />
             <span>main.vipr</span>
           </div>
-          <span className="text-[11px] text-base-content/75 font-mono">
+          <span className="text-[11px] text-base-content/75 font-mono hidden sm:inline">
             Tab: 4 spaces
           </span>
         </div>
@@ -144,8 +146,8 @@ export const EditorPane: FC<EditorPaneProps> = ({
           }}
           options={{
             fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-            fontSize: 14,
-            lineHeight: 22,
+            fontSize: isMobile ? 13 : 14,
+            lineHeight: isMobile ? 20 : 22,
             fontLigatures: true,
             tabSize: 4,
             insertSpaces: true,
@@ -161,16 +163,17 @@ export const EditorPane: FC<EditorPaneProps> = ({
             cursorBlinking: 'smooth',
             cursorSmoothCaretAnimation: 'on',
             lineNumbers: 'on',
-            lineNumbersMinChars: 3,
+            lineNumbersMinChars: isMobile ? 2 : 3,
             glyphMargin: false,
-            folding: true,
+            folding: !isMobile,
             automaticLayout: true,
+            overviewRulerLanes: isMobile ? 0 : 2,
             bracketPairColorization: {
               enabled: true,
             },
             padding: {
-              top: 12,
-              bottom: 12,
+              top: isMobile ? 8 : 12,
+              bottom: isMobile ? 8 : 12,
             },
             renderLineHighlight: 'all',
             wordWrap: 'on',
@@ -184,7 +187,7 @@ export const EditorPane: FC<EditorPaneProps> = ({
           onClick={() => setIsStdinOpen(!isStdinOpen)}
           className="flex items-center justify-between px-3 py-1.5 cursor-pointer hover:bg-base-300/50 transition-colors text-xs font-mono"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Terminal className="w-3.5 h-3.5 text-blue-700 dark:text-blue-400" />
             <span className="font-semibold text-xs text-base-content">Program Input (stdin)</span>
             {stdin.trim().length > 0 && (
@@ -220,12 +223,12 @@ export const EditorPane: FC<EditorPaneProps> = ({
         </div>
 
         {isStdinOpen && (
-          <div className="p-2.5 pt-1 border-t border-base-content/5">
+          <div className="p-2 sm:p-2.5 pt-1 border-t border-base-content/5">
             <textarea
               value={stdin}
               onChange={(e) => onStdinChange(e.target.value)}
               placeholder="Enter standard input (stdin) passed to input() statements (e.g. 25, multiple lines, etc.)..."
-              rows={3}
+              rows={isMobile ? 2 : 3}
               className="textarea textarea-bordered textarea-sm w-full font-mono text-xs leading-relaxed bg-base-100 text-base-content placeholder:text-base-content/40 focus:border-blue-500 focus:outline-none resize-y"
             />
           </div>
@@ -233,18 +236,18 @@ export const EditorPane: FC<EditorPaneProps> = ({
       </div>
 
       {/* Editor Status Bar */}
-      <div className="flex-none h-7 flex items-center justify-between px-3 bg-base-200/80 border-t border-base-content/10 text-[11px] font-mono text-base-content/75 select-none">
-        <div className="flex items-center gap-3">
+      <div className="flex-none h-6 sm:h-7 flex items-center justify-between px-3 bg-base-200/80 border-t border-base-content/10 text-[10px] sm:text-[11px] font-mono text-base-content/75 select-none">
+        <div className="flex items-center gap-2 sm:gap-3">
           <span className="flex items-center gap-1">
             <Code className="w-3 h-3 text-blue-800 dark:text-blue-400" />
-            <span>Vipr (AOT)</span>
+            <span>Vipr</span>
           </span>
-          <span>UTF-8</span>
-          <span>Spaces: 4</span>
+          <span className="hidden sm:inline">UTF-8</span>
+          <span className="hidden sm:inline">Spaces: 4</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <span>{lineCount} lines</span>
-          <span>{code.length} chars</span>
+          <span className="hidden sm:inline">{code.length} chars</span>
           <span className="text-base-content/90 font-medium">
             Ln {cursorPos.lineNumber}, Col {cursorPos.column}
           </span>
@@ -253,3 +256,4 @@ export const EditorPane: FC<EditorPaneProps> = ({
     </div>
   );
 };
+
